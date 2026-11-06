@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+file=$(jq -r '.tool_input.file_path // ""')
+case "$file" in *test-case*|*testcase*|*test_case*) ;; *) exit 0 ;; esac
+case "$file" in *.md|*.csv) ;; *) exit 0 ;; esac
+[ -f "$file" ] || exit 0
+
+codes='HDR|HOME|EXP|CHEF|DISH|CART|AUTH|CHK|OST|ORD|TRK|XC'
+problems=""
+ids=$(grep -oE 'SF-[A-Z]+-[0-9]+' "$file")
+if [ -z "$ids" ]; then
+  problems+="- No test case IDs found (expected SF-<MODULE>-<NNN>)\n"
+else
+  bad=$(grep -vE "^SF-($codes)-[0-9]{3}$" <<<"$ids" | sort -u | tr '\n' ' ')
+  [ -n "$bad" ] && problems+="- Invalid IDs: $bad\n"
+  dups=$(sort <<<"$ids" | uniq -d | tr '\n' ' ')
+  [ -n "$dups" ] && problems+="- Duplicate IDs: $dups\n"
+fi
+vague=$(grep -niE 'works (correctly|as expected|fine)|error (is )?(shown|displayed|appears)|\betc\b' "$file" | cut -c1-120)
+[ -n "$vague" ] && problems+="- Vague wording (quote exact UI text instead):\n$vague\n"
+
+if [ -n "$problems" ]; then
+  printf "Test cases in %s break foodme-storefront-test-cases rules:\n%b" "$file" "$problems" >&2
+  exit 2
+fi
+exit 0

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Git Push to Main Approval
+# PreToolUse hook (matcher: Bash). Asks the user before any push to main/master.
+
+cmd=$(jq -r '.tool_input.command // ""')
+push='git( +(-[Cc] +[^ ]+|-[^ ]+))* +push'
+echo "$cmd" | grep -qE "(^|[;&|( ])$push" || exit 0
+cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null
+br=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+segments=$(echo "$cmd" | grep -oE "$push[^;&|]*" | sed -E "s/^$push//; s/[0-9]*[<>].*$//" | tr -d "\"')")
+set -f
+ask=false
+while IFS= read -r args; do
+  n=0
+  for t in $args; do
+    case "$t" in --all|--mirror) ask=true; continue ;; -*) continue ;; esac
+    n=$((n + 1))
+    [ "$n" -eq 1 ] && continue
+    t=${t#+}
+    dst=${t##*:}
+    dst=${dst##*/}
+    case "$dst" in main|master) ask=true ;; esac
+    case "$br:$dst" in main:HEAD|master:HEAD) ask=true ;; esac
+  done
+  case "$br" in main|master) [ "$n" -lt 2 ] && ask=true ;; esac
+done <<EOF
+$segments
+EOF
+if [ "$ask" = true ]; then
+  jq -n --arg c "$cmd" '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:("This pushes to main/master: " + $c + " - approve only if you really want that.")}}'
+fi
+exit 0

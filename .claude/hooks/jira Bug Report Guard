@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+input=$(cat)
+type=$(jq -r '.tool_input.issueTypeName // .tool_input.issuetype // ""' <<<"$input" | tr '[:upper:]' '[:lower:]')
+summary=$(jq -r '.tool_input.summary // ""' <<<"$input")
+desc=$(jq -r '.tool_input.description // ""' <<<"$input")
+[ "$type" = "bug" ] || exit 0
+
+problems=()
+[[ "$summary" =~ ^\[(HDR|HOME|EXP|CHEF|DISH|CART|AUTH|CHK|OST|ORD|TRK|XC|API)\]\ .+ ]] \
+  || problems+=("Summary must start with a component code, e.g. [CHK] ...")
+[ ${#summary} -le 100 ] || problems+=("Summary is ${#summary} chars (max 100)")
+grep -qiE "doesn'?t work|not working|broken|issue with" <<<"$summary" \
+  && problems+=("Summary must say what is wrong, not 'broken' or 'doesn't work'")
+for s in "Environment" "Steps to reproduce" "Actual result" "Expected result" "Reproducibility"; do
+  grep -qi "$s" <<<"$desc" || problems+=("Missing section: $s")
+done
+grep -qE 'Bearer [A-Za-z0-9._-]{20,}|eyJ[A-Za-z0-9_-]{10,}\.' <<<"$desc" \
+  && problems+=("Remove the auth token from the description")
+
+if [ ${#problems[@]} -gt 0 ]; then
+  reason="Bug report breaks foodme-storefront-bug-reports rules: $(printf '%s; ' "${problems[@]}")"
+  jq -n --arg r "$reason" '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"deny",permissionDecisionReason:$r}}'
+else
+  jq -n '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"ask",permissionDecisionReason:"Review this Jira bug before it is created."}}'
+fi
+exit 0
