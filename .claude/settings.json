@@ -1,4 +1,12 @@
+
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/.claude/statusline.sh\""
+  },
+
   "hooks": {
     "PreToolUse": [
       {
@@ -6,7 +14,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ": 'Git Push to Main Approval'\ncmd=$(jq -r '.tool_input.command // \"\"')\npush='git( +(-[Cc] +[^ ]+|-[^ ]+))* +push'\necho \"$cmd\" | grep -qE \"(^|[;&|( ])$push\" || exit 0\ncd \"${CLAUDE_PROJECT_DIR:-.}\" 2>/dev/null\nbr=$(git symbolic-ref --short -q HEAD 2>/dev/null)\nsegments=$(echo \"$cmd\" | grep -oE \"$push[^;&|]*\" | sed -E \"s/^$push//; s/[0-9]*[<>].*$//\" | tr -d \"\\\"')\")\nset -f\nask=false\nwhile IFS= read -r args; do\n  n=0\n  for t in $args; do\n    case \"$t\" in --all|--mirror) ask=true; continue ;; -*) continue ;; esac\n    n=$((n + 1))\n    [ \"$n\" -eq 1 ] && continue\n    t=${t#+}\n    dst=${t##*:}\n    dst=${dst##*/}\n    case \"$dst\" in main|master) ask=true ;; esac\n    case \"$br:$dst\" in main:HEAD|master:HEAD) ask=true ;; esac\n  done\n  case \"$br\" in main|master) [ \"$n\" -lt 2 ] && ask=true ;; esac\ndone <<EOF\n$segments\nEOF\nif [ \"$ask\" = true ]; then\n  jq -n --arg c \"$cmd\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"ask\",permissionDecisionReason:(\"This pushes to main/master: \" + $c + \" - approve only if you really want that.\")}}'\nfi\nexit 0"
+            "command": "YOUR_EXISTING_GIT_PUSH_HOOK_COMMAND"
           }
         ]
       },
@@ -15,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -c '(.tool_input // {}) as $t | (($t.issueType // $t.issuetype // \"\") | ascii_downcase) as $type | ($t.summary // \"\") as $s | ($t.description // \"\") as $d | if $type != \"bug\" then empty else [ (if ($s | test(\"^\\\\[(HDR|HOME|EXP|CHEF|DISH|CART|AUTH|CHK|OST|ORD|TRK|XC|API)\\\\] .+\")) then empty else \"Summary must start with a component code, e.g. [CHK] ...\" end), (if ($s | length) > 100 then \"Summary is \\($s | length) chars (max 100)\" else empty end), (if ($s | test(\"doesn.?t work|not working|broken|issue with\"; \"i\")) then \"Summary must say what is wrong, not broken or does not work\" else empty end), ([\"Environment\",\"Steps to reproduce\",\"Actual result\",\"Expected result\",\"Reproducibility\"][] as $sec | if ($d | ascii_downcase | contains($sec | ascii_downcase)) then empty else \"Missing section: \\($sec)\" end), (if ($d | test(\"Bearer [A-Za-z0-9._-]{20,}|eyJ[A-Za-z0-9_-]{10,}\\\\.\")) then \"Remove the auth token from the description\" else empty end) ] as $p | {hookSpecificOutput: {hookEventName: \"PreToolUse\", permissionDecision: (if ($p | length) > 0 then \"deny\" else \"ask\" end), permissionDecisionReason: (if ($p | length) > 0 then \"Bug report breaks foodme-storefront-bug-reports rules: \" + ($p | join(\"; \")) else \"Review this Jira bug before it is created.\" end)}} end'"
+            "command": "YOUR_EXISTING_JIRA_VALIDATION_HOOK_COMMAND"
           }
         ]
       }
@@ -26,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=$(jq -r '.tool_input.file_path // \"\"'); echo \"$f\" | grep -qE '(test-case|testcase|test_case)[^/]*\\.(md|csv)$' || exit 0; [ -f \"$f\" ] || exit 0; ids=$(grep -oE 'SF-[A-Z]+-[0-9]+' \"$f\"); bad=$(echo \"$ids\" | grep -vE '^$|^SF-(HDR|HOME|EXP|CHEF|DISH|CART|AUTH|CHK|OST|ORD|TRK|XC)-[0-9]{3}$' | sort -u | tr '\\n' ' '); dups=$(echo \"$ids\" | grep -v '^$' | sort | uniq -d | tr '\\n' ' '); vague=$(grep -niE 'works (correctly|as expected|fine)|error (is )?(shown|displayed|appears)|(^|[^a-z])etc([^a-z]|$)' \"$f\" | cut -c1-120); msg=''; [ -z \"$ids\" ] && msg=\"$msg- No test case IDs found (expected SF-<MODULE>-<NNN>)\\n\"; [ -n \"$bad\" ] && msg=\"$msg- Invalid IDs: $bad\\n\"; [ -n \"$dups\" ] && msg=\"$msg- Duplicate IDs: $dups\\n\"; [ -n \"$vague\" ] && msg=\"$msg- Vague wording, quote exact UI text instead:\\n$vague\\n\"; [ -z \"$msg\" ] && exit 0; printf 'Test cases in %s break foodme-storefront-test-cases rules:\\n%b' \"$f\" \"$msg\" >&2; exit 2"
+            "command": "YOUR_EXISTING_TEST_CASE_VALIDATION_HOOK_COMMAND"
           }
         ]
       }
