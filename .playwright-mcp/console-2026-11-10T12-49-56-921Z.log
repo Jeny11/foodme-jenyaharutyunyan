@@ -1,0 +1,3 @@
+[     277ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://foodme-jenyaharutyunyan.onrender.com/:1
+[    5919ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://foodme-jenyaharutyunyan.onrender.com/favicon.ico:1
+[  908063ms] [ERROR] Failed to load resource: the server responded with a status of 429 (Too Many Requests) @ https://app.glitchtip.com/api/29267/envelope/?sentry_version=7&sentry_key=b13ad4ed96e94bedb5cd56b0b2038a49&sentry_client=sentry.javascript.react%2F10.73.0:1
