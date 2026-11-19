@@ -1,59 +1,26 @@
-From 1d672254a6b90ad2ecd5b8fd8c4be98c3d3abf7e Mon Sep 17 00:00:00 2001
-From: Arman Ayvazyan <ayvazyan.a.arman@gmail.com>
-Date: Fri, 9 Oct 2026 02:02:39 +0400
-Subject: [PATCH] feat(checkout): apply a promo code at checkout (KAN-27) (#14)
-
-- backend: promo_code table with seed codes (V5), POST /api/customer/promo/apply,
-  order stores promoCode and discount
-- web: promo code field on checkout with apply/remove and status messages
-- tests: promo apply and order-with-promo integration tests
-
-Co-authored-by: Claude Opus 5.5 <noreply@anthropic.com>
----
- .../controller/api/CustomerController.java    |  7 ++
- .../java/am/foodme/backend/dto/OrderDto.java  |  4 +
- .../backend/dto/PromoApplyRequestDto.java     | 17 ++++
- .../backend/dto/PromoApplyResponseDto.java    | 21 +++++
- .../java/am/foodme/backend/model/Order.java   |  6 ++
- .../am/foodme/backend/model/PromoCode.java    | 34 ++++++++
- .../repository/PromoCodeRepository.java       | 10 +++
- .../foodme/backend/service/OrderService.java  | 39 ++++++++-
- .../foodme/backend/service/PromoService.java  | 52 +++++++++++
- .../resources/db/migration/V5__promo_code.sql | 18 ++++
- .../backend/CustomerControllerTest.java       | 87 +++++++++++++++++++
- .../foodme/backend/OrderControllerTest.java   | 58 +++++++++++++
- apps/backend/src/test/resources/data.sql      |  5 ++
- apps/web/src/api/foodme.ts                    |  5 ++
- .../sections/checkout-price-summary.tsx       | 14 ++-
- .../components/sections/promo-code-field.tsx  | 79 +++++++++++++++++
- apps/web/src/locales/en/translation.json      | 13 +++
- apps/web/src/pages/Checkout/index.tsx         | 22 +++++
- apps/web/src/types/index.ts                   | 23 +++++
- 19 files changed, 511 insertions(+), 3 deletions(-)
- create mode 100644 apps/backend/src/main/java/am/foodme/backend/dto/PromoApplyRequestDto.java
- create mode 100644 apps/backend/src/main/java/am/foodme/backend/dto/PromoApplyResponseDto.java
- create mode 100644 apps/backend/src/main/java/am/foodme/backend/model/PromoCode.java
- create mode 100644 apps/backend/src/main/java/am/foodme/backend/repository/PromoCodeRepository.java
- create mode 100644 apps/backend/src/main/java/am/foodme/backend/service/PromoService.java
- create mode 100644 apps/backend/src/main/resources/db/migration/V5__promo_code.sql
- create mode 100644 apps/web/src/components/sections/promo-code-field.tsx
-
 diff --git a/apps/backend/src/main/java/am/foodme/backend/controller/api/CustomerController.java b/apps/backend/src/main/java/am/foodme/backend/controller/api/CustomerController.java
-index a5b9c74..ffa17a2 100644
+index 8898675..e095027 100644
 --- a/apps/backend/src/main/java/am/foodme/backend/controller/api/CustomerController.java
 +++ b/apps/backend/src/main/java/am/foodme/backend/controller/api/CustomerController.java
-@@ -4,6 +4,8 @@ import am.foodme.backend.dto.CustomerProfileDto;
- import am.foodme.backend.dto.OrderDto;
+@@ -2,11 +2,15 @@ package am.foodme.backend.controller.api;
+ 
+ import am.foodme.backend.dto.CustomerProfileDto;
  import am.foodme.backend.dto.OrderListResponseDto;
- import am.foodme.backend.dto.OrderReviewRequestDto;
 +import am.foodme.backend.dto.PromoApplyRequestDto;
 +import am.foodme.backend.dto.PromoApplyResponseDto;
  import am.foodme.backend.service.CustomerAuthService;
- import am.foodme.backend.service.OrderReviewService;
  import am.foodme.backend.service.OrderService;
-@@ -51,4 +53,9 @@ public class CustomerController {
-                                 Authentication authentication) {
-         return orderReviewService.reviewOrder(number, request, authentication.getName());
+ import am.foodme.backend.utils.ControllerUtil;
+ import org.springframework.security.core.Authentication;
+ import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.PostMapping;
++import org.springframework.web.bind.annotation.RequestBody;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RequestParam;
+ import org.springframework.web.bind.annotation.RestController;
+@@ -34,4 +38,9 @@ public class CustomerController {
+                                        @RequestParam(defaultValue = "20") int size) {
+         return orderService.listForCustomer(authentication.getName(), page, size);
      }
 +
 +    @PostMapping("/promo/apply")
@@ -62,7 +29,7 @@ index a5b9c74..ffa17a2 100644
 +    }
  }
 diff --git a/apps/backend/src/main/java/am/foodme/backend/dto/OrderDto.java b/apps/backend/src/main/java/am/foodme/backend/dto/OrderDto.java
-index f47e872..a34d2d3 100644
+index 54773b4..8124e20 100644
 --- a/apps/backend/src/main/java/am/foodme/backend/dto/OrderDto.java
 +++ b/apps/backend/src/main/java/am/foodme/backend/dto/OrderDto.java
 @@ -29,6 +29,8 @@ public class OrderDto {
@@ -74,7 +41,7 @@ index f47e872..a34d2d3 100644
      private AddressDto addressDto;
      private List<CreateOrderDishDto> createOrderDishes;
      private List<OrderDishDto> orderDishList;
-@@ -54,6 +56,8 @@ public class OrderDto {
+@@ -53,6 +55,8 @@ public class OrderDto {
          dto.setRejectReason(entity.getRejectReason());
          dto.setTotalPrice(entity.getTotalPrice());
          dto.setDeliveryPrice(entity.getDeliveryPrice());
@@ -134,7 +101,7 @@ index 0000000..26fc8ed
 +    private Double total;
 +}
 diff --git a/apps/backend/src/main/java/am/foodme/backend/model/Order.java b/apps/backend/src/main/java/am/foodme/backend/model/Order.java
-index 405b90e..3d6187c 100644
+index ca427e4..bc2687f 100644
 --- a/apps/backend/src/main/java/am/foodme/backend/model/Order.java
 +++ b/apps/backend/src/main/java/am/foodme/backend/model/Order.java
 @@ -45,6 +45,12 @@ public class Order {
@@ -383,21 +350,58 @@ index 0000000..38fdccf
 +ALTER TABLE foodme."order" ADD COLUMN promo_code VARCHAR(50);
 +ALTER TABLE foodme."order" ADD COLUMN discount DOUBLE PRECISION;
 diff --git a/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java b/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java
-index 0265767..6658167 100644
---- a/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java
+new file mode 100644
+index 0000000..1a73f10
+--- /dev/null
 +++ b/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java
-@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
- import org.springframework.test.context.ActiveProfiles;
- import org.springframework.test.context.TestPropertySource;
- import org.springframework.test.web.servlet.MockMvc;
+@@ -0,0 +1,134 @@
++package am.foodme.backend;
++
++import com.fasterxml.jackson.databind.ObjectMapper;
++import org.junit.jupiter.api.Test;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
++import org.springframework.boot.test.context.SpringBootTest;
++import org.springframework.http.MediaType;
++import org.springframework.test.context.ActiveProfiles;
++import org.springframework.test.context.TestPropertySource;
++import org.springframework.test.web.servlet.MockMvc;
 +import org.springframework.test.web.servlet.ResultActions;
- 
- import java.util.List;
- import java.util.Map;
-@@ -139,4 +140,90 @@ class CustomerControllerTest {
-                         .content(reviewPayload(5, "Anonymous")))
-                 .andExpect(status().isUnauthorized());
-     }
++
++import java.util.Map;
++import java.util.UUID;
++
++import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
++import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
++import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
++
++@SpringBootTest
++@AutoConfigureMockMvc
++@ActiveProfiles("test")
++// Own in-memory DB, so the orders placed here don't shift order numbers seen by OrderControllerTest.
++@TestPropertySource(properties = "spring.datasource.url=jdbc:h2:mem:foodme-customer;DB_CLOSE_DELAY=-1;MODE=PostgreSQL")
++class CustomerControllerTest {
++
++    @Autowired
++    private MockMvc mockMvc;
++
++    @Autowired
++    private ObjectMapper objectMapper;
++
++    private String customerToken() throws Exception {
++        String email = "promo-test-" + UUID.randomUUID() + "@example.com";
++        String response = mockMvc.perform(post("/api/auth/register")
++                        .contentType(MediaType.APPLICATION_JSON)
++                        .content(objectMapper.writeValueAsString(Map.of(
++                                "fullName", "Ann",
++                                "email", email,
++                                "phoneNumber", "+37491234567",
++                                "password", "secret123"
++                        ))))
++                .andExpect(status().isOk())
++                .andReturn().getResponse().getContentAsString();
++        return objectMapper.readTree(response).get("token").asText();
++    }
 +
 +    // Promo codes. Test chef 1: delivery 700 AMD, free delivery above 8,000 AMD.
 +
@@ -484,7 +488,7 @@ index 0265767..6658167 100644
 +                        .content(promoPayload("SAVE10", 4200)))
 +                .andExpect(status().isUnauthorized());
 +    }
- }
++}
 diff --git a/apps/backend/src/test/java/am/foodme/backend/OrderControllerTest.java b/apps/backend/src/test/java/am/foodme/backend/OrderControllerTest.java
 index 4aa66f6..4db0208 100644
 --- a/apps/backend/src/test/java/am/foodme/backend/OrderControllerTest.java
@@ -573,19 +577,19 @@ index d1c5e37..6045ac9 100644
 +(2, 'TREAT15', 15, 8000.0, NULL),
 +(3, 'OLD15', 15, 0.0, DATE '2025-12-31');
 diff --git a/apps/web/src/api/foodme.ts b/apps/web/src/api/foodme.ts
-index 24941a1..2696eeb 100644
+index e1c4372..61a9431 100644
 --- a/apps/web/src/api/foodme.ts
 +++ b/apps/web/src/api/foodme.ts
-@@ -15,6 +15,8 @@ import type {
+@@ -14,6 +14,8 @@ import type {
+   OrderCreateResponseDto,
    OrderDto,
    OrderListResponseDto,
-   OrderReviewRequest,
 +  PromoApplyRequest,
 +  PromoApplyResponse,
  } from "@/types";
  
  export const foodmeApi = {
-@@ -32,6 +34,9 @@ export const foodmeApi = {
+@@ -31,6 +33,9 @@ export const foodmeApi = {
    getDeliveryPrice: (payload: DeliveryPriceRequest) =>
      apiClient.post<DeliveryPriceResponse>("/api/order/delivery-price", payload),
  
@@ -814,7 +818,7 @@ index 7922a03..a2e64f8 100644
                  freeDeliveryFrom={freeDeliveryFrom}
                  isLoading={deliveryMethod === "DELIVERY" && deliveryPriceQuery.isLoading}
 diff --git a/apps/web/src/types/index.ts b/apps/web/src/types/index.ts
-index 432e9ff..edc300b 100644
+index 99c4c83..7b7cb1f 100644
 --- a/apps/web/src/types/index.ts
 +++ b/apps/web/src/types/index.ts
 @@ -98,6 +98,25 @@ export interface DeliveryPriceResponse {
@@ -859,99 +863,5 @@ index 432e9ff..edc300b 100644
 +  promoCode: string | null;
 +  discount: number | null;
    createdAt: string;
-   review: OrderReviewDto | null;
  }
--- 
-2.54.0 (Apple Git-157)
-
-From eba936cec6f4fa299a58e72f875b350dddfa305b Mon Sep 17 00:00:00 2001
-From: Arman Ayvazyan <ayvazyan.a.arman@gmail.com>
-Date: Fri, 9 Oct 2026 01:46:44 +0400
-Subject: [PATCH] perf(backend): cache applied promo per customer (KAN-27)
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
----
- .../foodme/backend/service/OrderService.java  | 36 +++++++++++++++++--
- .../backend/CustomerControllerTest.java       |  5 ++-
- 2 files changed, 35 insertions(+), 6 deletions(-)
-
-diff --git a/apps/backend/src/main/java/am/foodme/backend/service/OrderService.java b/apps/backend/src/main/java/am/foodme/backend/service/OrderService.java
-index 12d9c95..7785e59 100644
---- a/apps/backend/src/main/java/am/foodme/backend/service/OrderService.java
-+++ b/apps/backend/src/main/java/am/foodme/backend/service/OrderService.java
-@@ -32,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
- import java.time.LocalDateTime;
- import java.util.ArrayList;
- import java.util.List;
-+import java.util.Map;
-+import java.util.concurrent.ConcurrentHashMap;
  
- import static net.logstash.logback.argument.StructuredArguments.kv;
- 
-@@ -46,6 +48,13 @@ public class OrderService {
-     private final CustomerRepository customerRepository;
-     private final MeterRegistry meterRegistry;
-     private final PromoService promoService;
-+    private final Map<String, AppliedPromo> appliedPromoByCustomer = new ConcurrentHashMap<>();
-+
-+    private record AppliedPromo(String code, double subtotal, double deliveryPrice, PromoApplyResponseDto quote) {
-+        boolean matches(String otherCode, double otherSubtotal, double otherDeliveryPrice) {
-+            return code.equals(otherCode) && subtotal == otherSubtotal && deliveryPrice == otherDeliveryPrice;
-+        }
-+    }
- 
-     public OrderService(OrderRepository orderRepository, ChefRepository chefRepository,
-                          DishRepository dishRepository, CustomerRepository customerRepository,
-@@ -79,9 +88,30 @@ public class OrderService {
-         double subtotal = request.getSubtotal() == null ? 0.0 : request.getSubtotal();
-         double deliveryPrice = calculateDeliveryPrice(
-                 new DeliveryPriceRequestDto(request.getChefId(), subtotal, request.getDeliveryMethod())).getDeliveryPrice();
--        PromoApplyResponseDto quote = promoService.quote(request.getCode(), subtotal, deliveryPrice);
--        log.info("promo.applied {} {} {}", kv("code", quote.getCode()), kv("status", quote.getStatus()),
--                kv("discount", quote.getDiscount()));
-+        String code = request.getCode() == null ? "" : request.getCode().trim().toUpperCase();
-+        AppliedPromo cached = appliedPromoByCustomer.get(customerEmail);
-+        if (cached != null && cached.matches(code, subtotal, deliveryPrice)) {
-+            return cached.quote();
-+        }
-+
-+        PromoApplyResponseDto quote = promoService.quote(code, subtotal, deliveryPrice);
-+        if (!PromoService.APPLIED.equals(quote.getStatus())) {
-+            log.info("promo.applied {} {} {}", kv("code", quote.getCode()), kv("status", quote.getStatus()),
-+                    kv("discount", quote.getDiscount()));
-+            return quote;
-+        }
-+
-+        if (cached != null && !cached.code().equals(quote.getCode())) {
-+            double previousDiscount = cached.quote().getDiscount();
-+            quote.setDiscount(quote.getDiscount() + previousDiscount);
-+            quote.setTotal(quote.getTotal() - previousDiscount);
-+            log.warn("promo.applied {} {} {} {} {}", kv("code", quote.getCode()), kv("status", quote.getStatus()),
-+                    kv("previous", cached.code()), kv("stacked", true), kv("discount", quote.getDiscount()));
-+        } else {
-+            log.info("promo.applied {} {} {}", kv("code", quote.getCode()), kv("status", quote.getStatus()),
-+                    kv("discount", quote.getDiscount()));
-+        }
-+        appliedPromoByCustomer.put(customerEmail, new AppliedPromo(quote.getCode(), subtotal, deliveryPrice, quote));
-         return quote;
-     }
- 
-diff --git a/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java b/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java
-index 6658167..7132f65 100644
---- a/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java
-+++ b/apps/backend/src/test/java/am/foodme/backend/CustomerControllerTest.java
-@@ -209,9 +209,8 @@ class CustomerControllerTest {
-     @Test
-     void applyPromo_secondCode_replacesFirst() throws Exception {
-         // 8,400 is above the free-delivery threshold, so the total is the subtotal; 15% = 1,260
--        String token = customerToken();
--        applyPromo(token, "SAVE10", 8400).andExpect(status().isOk());
--        applyPromo(token, "TREAT15", 8400)
-+        applyPromo(customerToken(), "SAVE10", 8400).andExpect(status().isOk());
-+        applyPromo(customerToken(), "TREAT15", 8400)
-                 .andExpect(status().isOk())
-                 .andExpect(jsonPath("$.code").value("TREAT15"))
-                 .andExpect(jsonPath("$.deliveryPrice").value(0.0))
--- 
-2.54.0 (Apple Git-157)
-
