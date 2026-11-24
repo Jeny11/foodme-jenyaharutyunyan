@@ -2,7 +2,7 @@ name: Daily Triage
 
 on:
   schedule:
-    - cron: "0 11 * * *"   # 15:00 Yerevan (UTC+4)
+    - cron: "37 15 * * *"   # 19:37 Yerevan (UTC+4)
   workflow_dispatch:
     inputs:
       since:
