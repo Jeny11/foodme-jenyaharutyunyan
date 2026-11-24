@@ -1,0 +1,366 @@
+ticket: KAN-7
+sut: https://foodme-jenyaharutyunyan.onrender.com/
+sources:
+  doc: ""   # no docs/KAN-7-*.md in the repo; ACs copied from the Jira description
+  jira: [KAN-7]
+acs:
+  - id: AC-1
+    text: "On the checkout page, the customer can enter a promo code and press Apply."
+    source: jira:KAN-7
+  - id: AC-2
+    text: "A valid code reduces the subtotal by the code's percentage. The discount and the new total are shown before the order is placed."
+    source: jira:KAN-7
+  - id: AC-3
+    text: "A code works only if the subtotal is at least the code's minimum order amount. Otherwise the page shows \"Add {missing amount} AMD more to use this code\"."
+    source: jira:KAN-7
+  - id: AC-4
+    text: "An expired code shows \"This code has expired\"."
+    source: jira:KAN-7
+  - id: AC-5
+    text: "An unknown code shows \"Code not found\"."
+    source: jira:KAN-7
+  - id: AC-6
+    text: "One code per order. Applying a second code replaces the first."
+    source: jira:KAN-7
+  - id: AC-7
+    text: "The customer can remove the applied code, and the total goes back to the original."
+    source: jira:KAN-7
+launch_codes:   # reference data from the ticket's "Launch codes" table, word for word
+  - { code: SAVE10, discount: "10%", minimum_order: "3,000 AMD", status: valid }
+  - { code: TREAT15, discount: "15%", minimum_order: "8,000 AMD", status: valid }
+  - { code: OLD15, discount: "15%", minimum_order: "none", status: expired }
+out_of_scope:
+  - "Free-delivery codes"
+  - "Chef-specific codes"
+  - "First-order-only codes"
+questions:
+  - id: Q-1
+    about: [AC-2, AC-7]
+    text: "AC-2 says \"A valid code reduces the subtotal by the code's percentage\" but also \"the new total are shown\". If checkout adds a delivery fee (or other charges), is the percentage taken from the items subtotal only, or from the whole total?"
+    options:
+      - "Discount = % of items subtotal only; total = discounted subtotal + delivery/fees"
+      - "Discount = % of the full total including delivery/fees"
+    answer: "Items subtotal only"
+    answered_by: "Jeny11"
+  - id: Q-2
+    about: [AC-2]
+    text: "AC-2 \"reduces the subtotal by the code's percentage\" doesn't say how fractional AMD is handled (e.g. 15% of 8,050 = 1,207.5 AMD). How should the discount be rounded?"
+    options:
+      - "Round half up to whole AMD (1,208)"
+      - "Round down / truncate to whole AMD (1,207)"
+      - "Keep decimals (1,207.50)"
+    answer: "Keep decimals"
+    answered_by: "Jeny11"
+  - id: Q-3
+    about: [AC-2, AC-3]
+    text: "AC-3 says \"A code works only if the subtotal is at least the code's minimum order amount\", but nothing says what happens to an already applied code when the cart changes afterwards. If SAVE10 is applied at 3,000 AMD and an item is removed so the subtotal drops below 3,000, what should happen?"
+    options:
+      - "Discount is dropped and the \"Add {missing amount} AMD more to use this code\" message is shown"
+      - "Code is removed silently; total returns to original"
+      - "Discount stays applied (validated only at Apply time)"
+      - "Discount is recalculated live, and order placement is blocked until minimum is met"
+    answer: "Keep discount"
+    answered_by: "Jeny11"
+  - id: Q-4
+    about: [AC-6]
+    text: "AC-6 says \"Applying a second code replaces the first.\" If the second code is invalid (expired, unknown, or below minimum), does the first code stay applied?"
+    options:
+      - "First code stays applied; only the error for the second code is shown"
+      - "First code is removed; the error is shown and no discount applies"
+    answer: "First is removed"
+    answered_by: "Jeny11"
+  - id: Q-5
+    about: [AC-1, AC-5]
+    text: "The ACs never state how codes are matched. Should \"save10\" or \" SAVE10 \" (lowercase / surrounding spaces) be accepted as SAVE10, or show \"Code not found\"?"
+    options:
+      - "Case-insensitive and trimmed: both are accepted as SAVE10"
+      - "Trimmed but case-sensitive: \" SAVE10 \" works, \"save10\" is \"Code not found\""
+      - "Exact match only: both show \"Code not found\""
+    answer: "Trim, case-sensitive"
+    answered_by: "Jeny11"
+  - id: Q-6
+    about: [AC-3]
+    text: "AC-3 shows \"Add {missing amount} AMD more to use this code\" but the number format isn't defined, while the launch-codes table writes amounts as \"3,000 AMD\". For a 2,000 AMD shortfall, what exact text should the tester expect?"
+    options:
+      - "\"Add 2,000 AMD more to use this code\" (thousands separator)"
+      - "\"Add 2000 AMD more to use this code\" (plain integer)"
+      - "Either format is acceptable; assert the number value only"
+    answer: "\"Add 2000 AMD more\""
+    answered_by: "Jeny11"
+  - id: Q-7
+    about: [AC-1]
+    text: "The ACs don't say what happens when Apply is pressed with an empty promo field. What should the tester expect?"
+    options:
+      - "Apply button is disabled while the field is empty"
+      - "Nothing happens / no request, no message"
+      - "A validation message is shown (e.g. \"Code not found\" or \"Enter a code\")"
+      - "Out of scope for this ticket: don't test"
+    answer: "Apply disabled"
+    answered_by: "Jeny11"
+shared_setup: >-
+  Signed in as a customer at https://foodme-jenyaharutyunyan.onrender.com/ with an empty cart and no promo code applied.
+  Chef: Alans Kitchen (https://foodme-jenyaharutyunyan.onrender.com/chef/24), delivery 500 AMD, free delivery from 5,000 AMD.
+  At checkout the delivery method is DELIVERY. Expected totals follow Q-1: total = subtotal - discount + delivery.
+test_cases:
+  - id: KAN-7-TC-01
+    title: "SAVE10 at exactly the 3,000 AMD minimum is applied with a 300 AMD discount"
+    covers: [AC-1, AC-2, AC-3]
+    blocked_by: [Q-1]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24 (Alans Kitchen), signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY"
+      - "Type SAVE10 in the promo code field and press Apply"
+    expected: "A promo code field and an Apply button are on the checkout page. SAVE10 is applied: discount 300 AMD (10% of 3,000) and new total 3,200 AMD (3,000 - 300 + 500 delivery) are shown before the order is placed"
+    expected_source: Q-1
+    status: automated
+    spec: "KAN-7-TC-01: SAVE10 at exactly the 3,000 AMD minimum is applied with a 300 AMD discount"
+    qase_id: 17
+    execution:
+      result: mismatch
+      confidence: sure
+      log: execution.md#kan-7-tc-01
+  - id: KAN-7-TC-02
+    title: "SAVE10 with a 2,900 AMD subtotal is rejected with the missing amount"
+    covers: [AC-3]
+    blocked_by: [Q-6]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Yassai curry (2,900 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY"
+      - "Type SAVE10 in the promo code field and press Apply"
+    expected: "The page shows \"Add 100 AMD more to use this code\"; no discount is applied and the total stays 3,400 AMD (2,900 + 500 delivery)"
+    expected_source: Q-6
+    status: automated
+    spec: "KAN-7-TC-02: SAVE10 with a 2,900 AMD subtotal is rejected with the missing amount"
+    qase_id: 18
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-02
+  - id: KAN-7-TC-03
+    title: "TREAT15 at exactly the 8,000 AMD minimum is applied with a 1,200 AMD discount"
+    covers: [AC-2, AC-3]
+    blocked_by: [Q-1]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 2 x Chicken curry rice & vegetables (3,000 AMD each) and 1 x Salmon Maki (2,000 AMD) to the cart (subtotal 8,000 AMD)"
+      - "Go to checkout and choose DELIVERY"
+      - "Type TREAT15 in the promo code field and press Apply"
+    expected: "TREAT15 is applied: discount 1,200 AMD (15% of 8,000) and new total 6,800 AMD (8,000 - 1,200 + 0 delivery, free from 5,000) are shown before the order is placed"
+    expected_source: Q-1
+    status: automated
+    spec: "KAN-7-TC-03: TREAT15 at exactly the 8,000 AMD minimum is applied with a 1,200 AMD discount"
+    qase_id: 19
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-03
+  - id: KAN-7-TC-04
+    title: "TREAT15 with a 7,900 AMD subtotal is rejected with the missing amount"
+    covers: [AC-3]
+    blocked_by: [Q-6]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD), 1 x Yassai curry (2,900 AMD) and 1 x Salmon Maki (2,000 AMD) to the cart (subtotal 7,900 AMD)"
+      - "Go to checkout and choose DELIVERY"
+      - "Type TREAT15 in the promo code field and press Apply"
+    expected: "The page shows \"Add 100 AMD more to use this code\"; no discount is applied and the total stays 7,900 AMD (7,900 + 0 delivery)"
+    expected_source: Q-6
+    status: automated
+    spec: "KAN-7-TC-04: TREAT15 with a 7,900 AMD subtotal is rejected with the missing amount"
+    qase_id: 20
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-04
+  - id: KAN-7-TC-05
+    title: "TREAT15 on an 8,150 AMD subtotal keeps the fractional discount 1,222.5 AMD"
+    covers: [AC-2]
+    blocked_by: [Q-1, Q-2]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken Katsu Curry (3,150 AMD), 1 x Chicken curry rice & vegetables (3,000 AMD) and 1 x Salmon Maki (2,000 AMD) to the cart (subtotal 8,150 AMD)"
+      - "Go to checkout and choose DELIVERY"
+      - "Type TREAT15 in the promo code field and press Apply"
+    expected: "TREAT15 is applied: discount 1,222.5 AMD (15% of 8,150, decimals kept, not rounded) and new total 6,927.5 AMD (8,150 - 1,222.5 + 0 delivery)"
+    expected_source: Q-2
+    status: automated
+    spec: "KAN-7-TC-05: TREAT15 on an 8,150 AMD subtotal keeps the fractional discount 1,222.5 AMD"
+    qase_id: 21
+    execution:
+      result: mismatch
+      confidence: sure
+      log: execution.md#kan-7-tc-05
+  - id: KAN-7-TC-06
+    title: "Expired code OLD15 is rejected as expired"
+    covers: [AC-4]
+    blocked_by: []
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY"
+      - "Type OLD15 in the promo code field and press Apply"
+    expected: "The page shows \"This code has expired\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: AC-4
+    status: automated
+    spec: "KAN-7-TC-06: Expired code OLD15 is rejected as expired"
+    qase_id: 22
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-06
+  - id: KAN-7-TC-07
+    title: "Unknown code NOPE99 is rejected as not found"
+    covers: [AC-5]
+    blocked_by: []
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY"
+      - "Type NOPE99 in the promo code field and press Apply"
+    expected: "The page shows \"Code not found\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: AC-5
+    status: automated
+    spec: "KAN-7-TC-07: Unknown code NOPE99 is rejected as not found"
+    qase_id: 23
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-07
+  - id: KAN-7-TC-08
+    title: "SAVE10 with surrounding spaces is trimmed and applied"
+    covers: [AC-2, AC-5]
+    blocked_by: [Q-5]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY"
+      - "Type \" SAVE10 \" (one leading and one trailing space) in the promo code field and press Apply"
+    expected: "SAVE10 is applied: discount 300 AMD and new total 3,200 AMD (3,000 - 300 + 500 delivery)"
+    expected_source: Q-5
+    status: automated
+    spec: "KAN-7-TC-08: SAVE10 with surrounding spaces is trimmed and applied"
+    qase_id: 24
+    execution:
+      result: mismatch
+      confidence: sure
+      log: execution.md#kan-7-tc-08
+  - id: KAN-7-TC-09
+    title: "Lowercase save10 is rejected as not found (matching is case-sensitive)"
+    covers: [AC-5]
+    blocked_by: [Q-5]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY"
+      - "Type save10 in the promo code field and press Apply"
+    expected: "The page shows \"Code not found\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: Q-5
+    status: automated
+    spec: "KAN-7-TC-09: Lowercase save10 is rejected as not found (matching is case-sensitive)"
+    qase_id: 25
+    execution:
+      result: mismatch
+      confidence: sure
+      log: execution.md#kan-7-tc-09
+  - id: KAN-7-TC-10
+    title: "Apply is disabled while the promo code field is empty"
+    covers: [AC-1]
+    blocked_by: [Q-7]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY"
+      - "Leave the promo code field empty (clear it if it has text)"
+    expected: "The Apply button is disabled; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)"
+    expected_source: Q-7
+    status: automated
+    spec: "KAN-7-TC-10: Apply is disabled while the promo code field is empty"
+    qase_id: 26
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-10
+  - id: KAN-7-TC-11
+    title: "Applying TREAT15 after SAVE10 replaces the first code"
+    covers: [AC-6]
+    blocked_by: [Q-1]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 2 x Chicken curry rice & vegetables (3,000 AMD each) and 1 x Salmon Maki (2,000 AMD) to the cart (subtotal 8,000 AMD)"
+      - "Go to checkout and choose DELIVERY"
+      - "Type SAVE10 in the promo code field and press Apply; note discount 800 AMD and total 7,200 AMD"
+      - "Replace the field text with TREAT15 and press Apply"
+    expected: "Only TREAT15 is applied (one code per order): a single discount of 1,200 AMD and total 6,800 AMD (8,000 - 1,200 + 0 delivery); the SAVE10 discount of 800 AMD is no longer shown"
+    expected_source: AC-6
+    status: automated
+    spec: "KAN-7-TC-11: Applying TREAT15 after SAVE10 replaces the first code"
+    qase_id: 27
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-11
+  - id: KAN-7-TC-12
+    title: "Applying expired OLD15 after SAVE10 removes SAVE10 and shows the error"
+    covers: [AC-4, AC-6]
+    blocked_by: [Q-4]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 2 x Chicken curry rice & vegetables (3,000 AMD each) and 1 x Salmon Maki (2,000 AMD) to the cart (subtotal 8,000 AMD)"
+      - "Go to checkout and choose DELIVERY"
+      - "Type SAVE10 in the promo code field and press Apply; note discount 800 AMD and total 7,200 AMD"
+      - "Replace the field text with OLD15 and press Apply"
+    expected: "The page shows \"This code has expired\"; SAVE10 is removed, no discount is applied and the total is 8,000 AMD (8,000 + 0 delivery)"
+    expected_source: Q-4
+    status: automated
+    spec: "KAN-7-TC-12: Applying expired OLD15 after SAVE10 removes SAVE10 and shows the error"
+    qase_id: 28
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-12
+  - id: KAN-7-TC-13
+    title: "Removing an applied SAVE10 returns the total to the original"
+    covers: [AC-7]
+    blocked_by: []
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart"
+      - "Go to checkout and choose DELIVERY; note the total 3,500 AMD"
+      - "Type SAVE10 in the promo code field and press Apply; note discount 300 AMD and total 3,200 AMD"
+      - "Remove the applied code"
+    expected: "No discount is shown and the total goes back to the original 3,500 AMD"
+    expected_source: AC-7
+    status: automated
+    spec: "KAN-7-TC-13: Removing an applied SAVE10 returns the total to the original"
+    qase_id: 29
+    execution:
+      result: match
+      confidence: sure
+      log: execution.md#kan-7-tc-13
+  - id: KAN-7-TC-14
+    title: "SAVE10 stays applied and is recomputed when the cart drops below the minimum"
+    covers: [AC-2, AC-3]
+    blocked_by: [Q-1, Q-3]
+    steps:
+      - "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart"
+      - "Add 1 x Chicken curry rice & vegetables (3,000 AMD) and 1 x Oshinko Maki (1,500 AMD) to the cart (subtotal 4,500 AMD)"
+      - "Go to checkout and choose DELIVERY"
+      - "Type SAVE10 in the promo code field and press Apply; note discount 450 AMD and total 4,550 AMD"
+      - "Remove Chicken curry rice & vegetables from the cart (subtotal 1,500 AMD) and return to checkout"
+    expected: "SAVE10 is still applied; the discount is recomputed to 150 AMD (10% of 1,500) and the total is 1,850 AMD (1,500 - 150 + 500 delivery)"
+    expected_source: Q-3
+    status: automated
+    spec: "KAN-7-TC-14: SAVE10 stays applied and is recomputed when the cart drops below the minimum"
+    qase_id: 30
+    execution:
+      result: mismatch
+      confidence: unsure
+      unsure_reason: "Applied code is also dropped by navigating away from checkout with no cart change, and the cart can only be changed off the checkout page; cart-change rule (Q-3) vs navigation reset cannot be separated"
+      log: execution.md#kan-7-tc-14
+      human_check:
+        result: mismatch
+        by: Jeny11
+        at: "2026-11-19T21:37:58Z"
+        note: ""

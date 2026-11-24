@@ -1,0 +1,863 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\foodme-jenyaharutyunyan\\apps\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "e2e/kan-7-promo-codes.spec.ts",
+      "--reporter=json"
+    ],
+    "configFile": "C:\\foodme-jenyaharutyunyan\\apps\\web\\playwright.config.ts",
+    "rootDir": "C:/foodme-jenyaharutyunyan/apps/web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/foodme-jenyaharutyunyan/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/foodme-jenyaharutyunyan/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev -- --port 5180",
+      "url": "https://foodme-jenyaharutyunyan.onrender.com",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "kan-7-promo-codes.spec.ts",
+      "file": "kan-7-promo-codes.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "KAN-7 promo code at checkout",
+          "file": "kan-7-promo-codes.spec.ts",
+          "line": 65,
+          "column": 6,
+          "specs": [
+            {
+              "title": "KAN-7-TC-01: SAVE10 at exactly the 3,000 AMD minimum is applied with a 300 AMD discount",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30128,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 14,
+                            "line": 39
+                          },
+                          "message": "Error: page.goto: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://foodme-jenyaharutyunyan.onrender.com/checkout\", waiting until \"load\"\u001b[22m\n\n\n  37 |   await page.goto(CHEF);\n  38 |   for (const [name, qty] of cart) await addDish(page, name, qty);\n> 39 |   await page.goto(\"/checkout\");\n     |              ^\n  40 |   await createAccountAtCheckout(page, \"Kan Seven\");\n  41 |   const delivery = page.getByRole(\"button\", { name: /^Delivery/ });\n  42 |   await delivery.click();\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:39:14)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:67:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:08.917Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-dc0c5-ied-with-a-300-AMD-discount-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-a4a3bb3abefccad9a779",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 66,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-02: SAVE10 with a 2,900 AMD subtotal is rejected with the missing amount",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 35070,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 14,
+                            "line": 39
+                          },
+                          "message": "Error: page.goto: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n\u001b[2m  - navigating to \"https://foodme-jenyaharutyunyan.onrender.com/checkout\", waiting until \"load\"\u001b[22m\n\n\n  37 |   await page.goto(CHEF);\n  38 |   for (const [name, qty] of cart) await addDish(page, name, qty);\n> 39 |   await page.goto(\"/checkout\");\n     |              ^\n  40 |   await createAccountAtCheckout(page, \"Kan Seven\");\n  41 |   const delivery = page.getByRole(\"button\", { name: /^Delivery/ });\n  42 |   await delivery.click();\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:39:14)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:78:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:08.935Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-751bd-ted-with-the-missing-amount-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-6920e1d6d9a355b2146f",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 77,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-03: TREAT15 at exactly the 8,000 AMD minimum is applied with a 1,200 AMD discount",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 35092,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 14,
+                            "line": 39
+                          },
+                          "message": "Error: page.goto: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n\u001b[2m  - navigating to \"https://foodme-jenyaharutyunyan.onrender.com/checkout\", waiting until \"load\"\u001b[22m\n\n\n  37 |   await page.goto(CHEF);\n  38 |   for (const [name, qty] of cart) await addDish(page, name, qty);\n> 39 |   await page.goto(\"/checkout\");\n     |              ^\n  40 |   await createAccountAtCheckout(page, \"Kan Seven\");\n  41 |   const delivery = page.getByRole(\"button\", { name: /^Delivery/ });\n  42 |   await delivery.click();\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:39:14)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:88:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:08.887Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-f028b-d-with-a-1-200-AMD-discount-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-427fbdcc4a6e09f518d0",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 87,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-04: TREAT15 with a 7,900 AMD subtotal is rejected with the missing amount",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 35080,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 14,
+                            "line": 39
+                          },
+                          "message": "Error: page.goto: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n\u001b[2m  - navigating to \"https://foodme-jenyaharutyunyan.onrender.com/checkout\", waiting until \"load\"\u001b[22m\n\n\n  37 |   await page.goto(CHEF);\n  38 |   for (const [name, qty] of cart) await addDish(page, name, qty);\n> 39 |   await page.goto(\"/checkout\");\n     |              ^\n  40 |   await createAccountAtCheckout(page, \"Kan Seven\");\n  41 |   const delivery = page.getByRole(\"button\", { name: /^Delivery/ });\n  42 |   await delivery.click();\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:39:14)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:97:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:08.937Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-b82c3-ted-with-the-missing-amount-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-d030053d7db07473515e",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 96,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-05: TREAT15 on an 8,150 AMD subtotal keeps the fractional discount 1,222.5 AMD",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30155,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 6,
+                            "line": 24
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Chicken Katsu Curry [\\d,]+ AMD/ })\u001b[22m\n\n\n  22 |   await page\n  23 |     .getByRole(\"button\", { name: new RegExp(`^${escapeRe(name)} [\\\\d,]+ AMD`) })\n> 24 |     .click();\n     |      ^\n  25 |   const dialog = page.getByRole(\"dialog\", { name });\n  26 |   await expect(dialog).toBeVisible();\n  27 |   for (let i = 1; i < qty; i++) {\n    at addDish (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:24:6)\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:38:41)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:107:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:44.490Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-ce8b8-tional-discount-1-222-5-AMD-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-132277ba56911c67b9d8",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 106,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-06: Expired code OLD15 is rejected as expired",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 30068,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 6,
+                            "line": 24
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Chicken curry rice & vegetables [\\d,]+ AMD/ })\u001b[22m\n\n\n  22 |   await page\n  23 |     .getByRole(\"button\", { name: new RegExp(`^${escapeRe(name)} [\\\\d,]+ AMD`) })\n> 24 |     .click();\n     |      ^\n  25 |   const dialog = page.getByRole(\"dialog\", { name });\n  26 |   await expect(dialog).toBeVisible();\n  27 |   for (let i = 1; i < qty; i++) {\n    at addDish (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:24:6)\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:38:41)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:116:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:48.290Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-a935d-LD15-is-rejected-as-expired-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-82db5977476f6c31e73f",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 115,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-07: Unknown code NOPE99 is rejected as not found",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 30068,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 6,
+                            "line": 24
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Chicken curry rice & vegetables [\\d,]+ AMD/ })\u001b[22m\n\n\n  22 |   await page\n  23 |     .getByRole(\"button\", { name: new RegExp(`^${escapeRe(name)} [\\\\d,]+ AMD`) })\n> 24 |     .click();\n     |      ^\n  25 |   const dialog = page.getByRole(\"dialog\", { name });\n  26 |   await expect(dialog).toBeVisible();\n  27 |   for (let i = 1; i < qty; i++) {\n    at addDish (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:24:6)\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:38:41)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:126:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:48.291Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-970e7-99-is-rejected-as-not-found-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-7a6caf6664558c3d540c",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 125,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-08: SAVE10 with surrounding spaces is trimmed and applied",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 30092,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 6,
+                            "line": 24
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Chicken curry rice & vegetables [\\d,]+ AMD/ })\u001b[22m\n\n\n  22 |   await page\n  23 |     .getByRole(\"button\", { name: new RegExp(`^${escapeRe(name)} [\\\\d,]+ AMD`) })\n> 24 |     .click();\n     |      ^\n  25 |   const dialog = page.getByRole(\"dialog\", { name });\n  26 |   await expect(dialog).toBeVisible();\n  27 |   for (let i = 1; i < qty; i++) {\n    at addDish (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:24:6)\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:38:41)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:136:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:41:48.326Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-40b35-aces-is-trimmed-and-applied-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-38c8a14bd38c3139ebe4",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 135,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-09: Lowercase save10 is rejected as not found (matching is case-sensitive)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30102,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 6,
+                            "line": 24
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Chicken curry rice & vegetables [\\d,]+ AMD/ })\u001b[22m\n\n\n  22 |   await page\n  23 |     .getByRole(\"button\", { name: new RegExp(`^${escapeRe(name)} [\\\\d,]+ AMD`) })\n> 24 |     .click();\n     |      ^\n  25 |   const dialog = page.getByRole(\"dialog\", { name });\n  26 |   await expect(dialog).toBeVisible();\n  27 |   for (let i = 1; i < qty; i++) {\n    at addDish (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:24:6)\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:38:41)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:145:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:42:18.024Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-879be-matching-is-case-sensitive--chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-4b5ba80e2966a7f7dbae",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 144,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-10: Apply is disabled while the promo code field is empty",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 30095,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 18,
+                            "line": 42
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Delivery/ })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-pressed=\"true\" class=\"flex min-h-12 items-center gap-2.5 rounded-lg px-3 py-1.5 text-left transition-colors bg-white text-zinc-900 shadow-sm\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not stable\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\n\n  40 |   await createAccountAtCheckout(page, \"Kan Seven\");\n  41 |   const delivery = page.getByRole(\"button\", { name: /^Delivery/ });\n> 42 |   await delivery.click();\n     |                  ^\n  43 |   await expect(delivery).toHaveAttribute(\"aria-pressed\", \"true\");\n  44 |   return page.getByRole(\"complementary\");\n  45 | }\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:42:18)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:155:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:42:20.430Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-e83b6-e-promo-code-field-is-empty-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-e992070259d3d06d456b",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 154,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-11: Applying TREAT15 after SAVE10 replaces the first code",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 29693,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Kan Seven/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Kan Seven/)\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Kan Seven/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Kan Seven/)\u001b[22m\n\n    at createAccountAtCheckout (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\auth.ts:18:68)\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:40:3)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:165:21",
+                        "location": {
+                          "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\auth.ts",
+                          "column": 68,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mauth.ts:18\n\n\u001b[0m \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m form\u001b[33m.\u001b[39mgetByLabel(\u001b[32m\"Password\"\u001b[39m)\u001b[33m.\u001b[39mfill(password)\u001b[33m;\u001b[39m\n \u001b[90m 17 |\u001b[39m   \u001b[36mawait\u001b[39m form\u001b[33m.\u001b[39mgetByRole(\u001b[32m\"button\"\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m\"Create account\"\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByText(\u001b[36mnew\u001b[39m \u001b[33mRegExp\u001b[39m(\u001b[32m`Signed in as ${name}`\u001b[39m)))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m { email\u001b[33m,\u001b[39m password\u001b[33m,\u001b[39m name }\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\auth.ts",
+                            "column": 68,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Signed in as Kan Seven/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Signed in as Kan Seven/)\u001b[22m\n\n\n   at auth.ts:18\n\n  16 |   await form.getByLabel(\"Password\").fill(password);\n  17 |   await form.getByRole(\"button\", { name: \"Create account\" }).click();\n> 18 |   await expect(page.getByText(new RegExp(`Signed in as ${name}`))).toBeVisible();\n     |                                                                    ^\n  19 |\n  20 |   return { email, password, name };\n  21 | }\n    at createAccountAtCheckout (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\auth.ts:18:68)\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:40:3)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:165:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:42:20.161Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-77165-E10-replaces-the-first-code-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\auth.ts",
+                        "column": 68,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-c699b096f8ef4900bc34",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 164,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-12: Applying expired OLD15 after SAVE10 removes SAVE10 and shows the error",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 30072,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 18,
+                            "line": 42
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Delivery/ })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-pressed=\"true\" class=\"flex min-h-12 items-center gap-2.5 rounded-lg px-3 py-1.5 text-left transition-colors bg-white text-zinc-900 shadow-sm\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not stable\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\n\n  40 |   await createAccountAtCheckout(page, \"Kan Seven\");\n  41 |   const delivery = page.getByRole(\"button\", { name: /^Delivery/ });\n> 42 |   await delivery.click();\n     |                  ^\n  43 |   await expect(delivery).toHaveAttribute(\"aria-pressed\", \"true\");\n  44 |   return page.getByRole(\"complementary\");\n  45 | }\n    at checkoutWith (C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:42:18)\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:177:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:42:20.658Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-49b98--SAVE10-and-shows-the-error-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-2d11e59e1cb185387ba2",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 176,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-13: Removing an applied SAVE10 returns the total to the original",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16094,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:42:49.636Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-1bb0d2741d289e0d741a",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 187,
+              "column": 3
+            },
+            {
+              "title": "KAN-7-TC-14: SAVE10 stays applied and is recomputed when the cart drops below the minimum",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 30044,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts",
+                            "column": 27,
+                            "line": 214
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary')\nExpected pattern: \u001b[32m/Discount.*?[−-]\\s?150 AMD/\u001b[39m\nReceived string:  \u001b[31m\"Your items1×Oshinko Maki1,500 AMDPromo codeApplySubtotal1,500 AMDDelivery500 AMDAdd 3,500 AMD more for free delivery.Total2,000 AMDPlace order\"\u001b[39m\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary')\u001b[22m\n\u001b[2m    5 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items1×Oshinko Maki1,500 AMDPromo codeApplySubtotal1,500 AMDDeliveryCalculating…Total—Place order\"\u001b[22m\n\u001b[2m    7 × locator resolved to <aside class=\"order-2 space-y-3 animate-fade-up [animation-delay:120ms] lg:sticky lg:top-24\">…</aside>\u001b[22m\n\u001b[2m      - unexpected value \"Your items1×Oshinko Maki1,500 AMDPromo codeApplySubtotal1,500 AMDDelivery500 AMDAdd 3,500 AMD more for free delivery.Total2,000 AMDPlace order\"\u001b[22m\n\u001b[2m  - Test timeout of 30000ms exceeded.\u001b[22m\n\n\n  212 |\n  213 |     const summary = page.getByRole(\"complementary\");\n> 214 |     await expect(summary).toContainText(discount(\"150\"));\n      |                           ^\n  215 |     await expect(summary).toContainText(total(\"1,850\"));\n  216 |   });\n  217 | });\n    at C:\\foodme-jenyaharutyunyan\\apps\\web\\e2e\\kan-7-promo-codes.spec.ts:214:27"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-19T21:42:51.454Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\foodme-jenyaharutyunyan\\apps\\web\\test-results\\kan-7-promo-codes-KAN-7-pr-3a32d-art-drops-below-the-minimum-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b3afd31181004263cf3f-529635674d4eeb561fdb",
+              "file": "kan-7-promo-codes.spec.ts",
+              "line": 200,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-19T21:41:06.880Z",
+    "duration": 139131.06900000002,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 13,
+    "flaky": 0
+  }
+}

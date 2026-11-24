@@ -1,0 +1,35 @@
+requirements:
+  approved: true
+  by: Jeny11
+  at: "2026-11-19T21:13:38Z"
+  note: ""
+plan:
+  approved: true
+  by: Jeny11
+  at: "2026-11-19T21:18:01Z"
+  note: "TC-14: kept discount is recomputed on the new subtotal (Recomputed: 150)"
+cases:
+  approved: true
+  by: Jeny11
+  at: "2026-11-19T21:20:39Z"
+  note: "phase 1 (case-judge agent not loaded in session); no judge verdict"
+manual_check:
+  approved: true
+  by: Jeny11
+  at: "2026-11-19T21:37:58Z"
+  note: "1 unsure, 1 confirmed, 0 still unsure"
+tests:
+  approved: true
+  by: Jeny11
+  at: "2026-11-19T21:40:54Z"
+  note: "phase 1 (test-judge agent not loaded in session); no judge verdict"
+report_push:
+  approved: true
+  by: Jeny11
+  at: "2026-11-19T21:46:34Z"
+  note: "push to Qase project FM (Food me) instead of FOODME, confirmed by Jeny11"
+issues:
+  approved: true
+  by: Jeny11
+  at: "2026-11-19T21:52:05Z"
+  note: "3 approved, 2 rejected"

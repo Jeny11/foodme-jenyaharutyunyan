@@ -1,16 +1,55 @@
+
 {
   "mcpServers": {
     "jira": {
       "command": "cmd",
-      "args": ["/c", "agentsecrets", "env", "--", "uvx", "--python", "3.12", "mcp-atlassian"]
+      "args": [
+        "/c",
+        "agentsecrets",
+        "env",
+        "--",
+        "uvx",
+        "--python",
+        "3.12",
+        "mcp-atlassian"
+      ]
     },
     "qase": {
       "command": "cmd",
-      "args": ["/c", "agentsecrets", "env", "--", "npx", "-y", "@qase/mcp-server"]
+      "args": [
+        "/c",
+        "agentsecrets",
+        "env",
+        "--",
+        "npx",
+        "-y",
+        "@qase/mcp-server"
+      ]
     },
     "playwright": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "@playwright/mcp@latest"]
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    },
+    "glitchtip": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-glitchtip"
+      ],
+      "env": {
+        "GLITCHTIP_TOKEN": "${GLITCHTIP_TOKEN}",
+        "GLITCHTIP_ORGANIZATION": "foodme",
+        "GLITCHTIP_BASE_URL": "https://app.glitchtip.com"
+      }
+    },
+    "grafana": {
+      "type": "http",
+      "url": "https://foodme-monitoring.onrender.com/mcp"
     }
   }
 }

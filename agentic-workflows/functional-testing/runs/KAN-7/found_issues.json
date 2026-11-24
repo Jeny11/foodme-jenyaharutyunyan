@@ -1,0 +1,201 @@
+{
+  "run": "KAN-7",
+  "sut": "https://foodme-jenyaharutyunyan.onrender.com/",
+  "issues": [
+    {
+      "id": "KAN-7-ISSUE-01",
+      "title": "Bug: SAVE10 takes 10% of subtotal plus delivery (−350 AMD instead of −300 AMD on a 3,000 AMD cart)",
+      "cases": [
+        "KAN-7-TC-01"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-1",
+        "AC-2",
+        "AC-3"
+      ],
+      "expected": "A promo code field and an Apply button are on the checkout page. SAVE10 is applied: discount 300 AMD (10% of 3,000) and new total 3,200 AMD (3,000 - 300 + 500 delivery) are shown before the order is placed",
+      "observed": "textbox \"Promo code\" + button \"Apply\" present; \"SAVE10 applied: 10% off\"; Subtotal 3,000 AMD; Delivery 500 AMD; \"Discount (SAVE10) −350 AMD\"; Total 3,150 AMD",
+      "steps": [
+        "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24 (Alans Kitchen), signed in, with an empty cart",
+        "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart",
+        "Go to checkout and choose DELIVERY",
+        "Type SAVE10 in the promo code field and press Apply"
+      ],
+      "evidence": [
+        "execution.md#kan-7-tc-01",
+        "POST /api/customer/promo/apply request {\"code\":\"SAVE10\",\"chefId\":24,\"subtotal\":3000,\"deliveryMethod\":\"DELIVERY\"} response {\"code\":\"SAVE10\",\"status\":\"APPLIED\",\"percent\":10,\"missingAmount\":null,\"discount\":350.0,\"deliveryPrice\":500.0,\"total\":3150.0}",
+        "results.json: KAN-7-TC-01: timedOut (setup, page.goto /checkout; no assertion reached)"
+      ],
+      "observed_at": "2026-11-19T21:33:41Z",
+      "priority": "High",
+      "priority_reason": "Major: wrong money on every promo order that pays delivery (subtotal < 5,000 AMD); the discount exceeds the advertised percentage of the items subtotal (Q-1). Reproduced 2 of 2 tries.",
+      "status": "filed",
+      "decision": {
+        "by": "Jeny11",
+        "at": "2026-11-19T21:52:05Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "KAN-8",
+        "url": "https://jenyharutyunyan.atlassian.net/browse/KAN-8",
+        "sprint": "failed: project KAN has no sprint field (JQL: field sprint does not exist)"
+      }
+    },
+    {
+      "id": "KAN-7-ISSUE-02",
+      "title": "Bug: TREAT15 discount is rounded to whole AMD (−1,223 instead of −1,222.5 on 8,150 AMD)",
+      "cases": [
+        "KAN-7-TC-05"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-2"
+      ],
+      "expected": "TREAT15 is applied: discount 1,222.5 AMD (15% of 8,150, decimals kept, not rounded) and new total 6,927.5 AMD (8,150 - 1,222.5 + 0 delivery)",
+      "observed": "\"TREAT15 applied: 15% off\"; Subtotal 8,150 AMD; Delivery Free; \"Discount (TREAT15) −1,223 AMD\"; Total 6,927 AMD",
+      "steps": [
+        "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart",
+        "Add 1 x Chicken Katsu Curry (3,150 AMD), 1 x Chicken curry rice & vegetables (3,000 AMD) and 1 x Salmon Maki (2,000 AMD) to the cart (subtotal 8,150 AMD)",
+        "Go to checkout and choose DELIVERY",
+        "Type TREAT15 in the promo code field and press Apply"
+      ],
+      "evidence": [
+        "execution.md#kan-7-tc-05",
+        "POST /api/customer/promo/apply response {\"status\":\"APPLIED\",\"percent\":15,\"discount\":1223.0,\"deliveryPrice\":0.0,\"total\":6927.0}",
+        "results.json: KAN-7-TC-05: timedOut (setup, waiting for the Chicken Katsu Curry dish button; no assertion reached)"
+      ],
+      "observed_at": "2026-11-19T21:32:10Z",
+      "priority": "Low",
+      "priority_reason": "Minor: 0.5 AMD difference, only when the percentage yields a fractional amount; contradicts the agreed rule (Q-2: keep decimals). Reproduced 2 of 2 tries.",
+      "status": "rejected",
+      "decision": {
+        "by": "Jeny11",
+        "at": "2026-11-19T21:52:05Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "",
+        "url": "",
+        "sprint": ""
+      }
+    },
+    {
+      "id": "KAN-7-ISSUE-03",
+      "title": "Bug: \" SAVE10 \" (with spaces) applies −350 AMD instead of −300 AMD on a 3,000 AMD cart",
+      "cases": [
+        "KAN-7-TC-08"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-2",
+        "AC-5"
+      ],
+      "expected": "SAVE10 is applied: discount 300 AMD and new total 3,200 AMD (3,000 - 300 + 500 delivery)",
+      "observed": "\"SAVE10 applied: 10% off\"; Subtotal 3,000 AMD; Delivery 500 AMD; \"Discount (SAVE10) −350 AMD\"; Total 3,150 AMD",
+      "steps": [
+        "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart",
+        "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart",
+        "Go to checkout and choose DELIVERY",
+        "Type \" SAVE10 \" (one leading and one trailing space) in the promo code field and press Apply"
+      ],
+      "evidence": [
+        "execution.md#kan-7-tc-08",
+        "POST /api/customer/promo/apply request {\"code\":\"SAVE10\",...} (trimmed by the client), response {\"status\":\"APPLIED\",\"discount\":350.0,\"deliveryPrice\":500.0,\"total\":3150.0}",
+        "results.json: KAN-7-TC-08: timedOut (setup, waiting for the Chicken curry rice & vegetables dish button; no assertion reached)"
+      ],
+      "observed_at": "2026-11-19T21:33:28Z",
+      "priority": "High",
+      "priority_reason": "Major: wrong money on a promo order that pays delivery; trimming itself works, the discount amount is wrong. Seen 1 of 1 tries for this input.",
+      "status": "filed",
+      "decision": {
+        "by": "Jeny11",
+        "at": "2026-11-19T21:52:05Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "KAN-9",
+        "url": "https://jenyharutyunyan.atlassian.net/browse/KAN-9",
+        "sprint": "failed: project KAN has no sprint field (JQL: field sprint does not exist)"
+      }
+    },
+    {
+      "id": "KAN-7-ISSUE-04",
+      "title": "Bug: lowercase \"save10\" is accepted as SAVE10 instead of showing \"Code not found\"",
+      "cases": [
+        "KAN-7-TC-09"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-5"
+      ],
+      "expected": "The page shows \"Code not found\"; no discount is applied and the total stays 3,500 AMD (3,000 + 500 delivery)",
+      "observed": "\"SAVE10 applied: 10% off\"; \"Discount (SAVE10) −350 AMD\"; Total 3,150 AMD; no \"Code not found\"",
+      "steps": [
+        "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart",
+        "Add 1 x Chicken curry rice & vegetables (3,000 AMD) to the cart",
+        "Go to checkout and choose DELIVERY",
+        "Type save10 in the promo code field and press Apply"
+      ],
+      "evidence": [
+        "execution.md#kan-7-tc-09",
+        "POST /api/customer/promo/apply request {\"code\":\"SAVE10\",...} (the client uppercased \"save10\"), response {\"status\":\"APPLIED\",\"discount\":350.0,\"total\":3150.0}",
+        "results.json: KAN-7-TC-09: timedOut (setup, waiting for the Chicken curry rice & vegetables dish button; no assertion reached)"
+      ],
+      "observed_at": "2026-11-19T21:33:46Z",
+      "priority": "Low",
+      "priority_reason": "Minor: validation rule differs from the agreed one (Q-5: trimmed, case-sensitive); the customer still gets a real code's discount, so there's no extra money impact beyond ISSUE-01. Seen 1 of 1 tries.",
+      "status": "rejected",
+      "decision": {
+        "by": "Jeny11",
+        "at": "2026-11-19T21:52:05Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "",
+        "url": "",
+        "sprint": ""
+      }
+    },
+    {
+      "id": "KAN-7-ISSUE-05",
+      "title": "Bug: applied SAVE10 is gone after the cart drops below 3,000 AMD (expected kept and recomputed to −150 AMD)",
+      "cases": [
+        "KAN-7-TC-14"
+      ],
+      "source": "05 mismatch",
+      "covers": [
+        "AC-2",
+        "AC-3"
+      ],
+      "expected": "SAVE10 is still applied; the discount is recomputed to 150 AMD (10% of 1,500) and the total is 1,850 AMD (1,500 - 150 + 500 delivery)",
+      "observed": "promo field empty; no \"SAVE10 applied\"; no Discount line; Subtotal 1,500 AMD; Delivery 500 AMD; Total 2,000 AMD",
+      "steps": [
+        "Open https://foodme-jenyaharutyunyan.onrender.com/chef/24, signed in, with an empty cart",
+        "Add 1 x Chicken curry rice & vegetables (3,000 AMD) and 1 x Oshinko Maki (1,500 AMD) to the cart (subtotal 4,500 AMD)",
+        "Go to checkout and choose DELIVERY",
+        "Type SAVE10 in the promo code field and press Apply; note discount 450 AMD and total 4,550 AMD",
+        "Remove Chicken curry rice & vegetables from the cart (subtotal 1,500 AMD) and return to checkout"
+      ],
+      "evidence": [
+        "execution.md#kan-7-tc-14 (human check: mismatch by Jeny11 at 2026-11-19T21:37:58Z)",
+        "Diagnostic in execution.md: the applied code is also dropped when leaving /checkout and returning with an unchanged cart",
+        "results.json: KAN-7-TC-14: timedOut at the assertion expect(summary).toContainText(/Discount.*?[−-]\\s?150 AMD/) (spec line 214)"
+      ],
+      "observed_at": "2026-11-19T21:35:34Z",
+      "priority": "Medium",
+      "priority_reason": "Major-ish: the customer silently loses an applied discount (Q-3 says keep it) but can re-apply it at checkout; reproduced manually and in the automated run.",
+      "status": "filed",
+      "decision": {
+        "by": "Jeny11",
+        "at": "2026-11-19T21:52:05Z",
+        "note": ""
+      },
+      "jira": {
+        "key": "KAN-10",
+        "url": "https://jenyharutyunyan.atlassian.net/browse/KAN-10",
+        "sprint": "failed: project KAN has no sprint field (JQL: field sprint does not exist)"
+      }
+    }
+  ]
+}
